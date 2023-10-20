@@ -11,7 +11,7 @@ class CoeffTableModel : public QAbstractTableModel
 
 
    //Q_PROPERTY(QStringList headerData READ headerData WRITE setHeaderData NOTIFY headerDataChanged)
-
+   //Q_PROPERTY(QList<QVariant> headerData READ headerData WRITE setHeaderData NOTIFY headerDataModified)
 public:
     explicit CoeffTableModel(QObject *parent = nullptr);
 
@@ -23,13 +23,16 @@ public:
     Qt::ItemFlags flags(const QModelIndex& index) const override;
     bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole) override;
 
+    void setHeaderData(const QList<QVariant> hData);
+    void sendHeaderData();
+
 
 private:
     QList<QList<QVariant>> tableData;
     QList<QVariant> m_headerData;  // Member variable to store header data
 
 signals:
-
+    void headerDataModified(QList<QVariant> data);
 
     // QAbstractItemModel interface
 public:

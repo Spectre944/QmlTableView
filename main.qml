@@ -9,6 +9,15 @@ Window {
     width: 800
     height: 600
 
+    Connections {
+        target: TableViewContext
+
+        function onHeaderDataModified(data) {
+            //textAreaLog.append(data)
+            console.log(data)
+        }
+    }
+
     Rectangle {
         id: backround
         anchors.fill: parent
@@ -48,6 +57,8 @@ Window {
                 spacing: 0
                 height: 25
                 width: parent.width
+
+
 
                 Repeater{
                     model: param.tableColums
@@ -163,7 +174,10 @@ Window {
 
 
 
+
+
     }
+
 
 
 
