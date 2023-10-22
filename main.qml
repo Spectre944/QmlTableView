@@ -9,6 +9,12 @@ Window {
     width: 800
     height: 600
 
+    Item {
+        //internal function for future
+        id: f
+
+    }
+
     Connections {
         target: TableViewContext
 
@@ -16,6 +22,20 @@ Window {
             //textAreaLog.append(data)
             console.log(data)
         }
+    }
+
+    Component.onCompleted: {
+        console.log("headerData length: " + TableViewContext.headerData.length);
+
+        // Clear the existing items in the tableColums model
+        param.headerModel.clear();
+
+        // Populate the tableColums model with data from headerData
+        for (var i = 0; i < TableViewContext.headerData.length; i++) {
+            param.headerModel.append({ "headerText": TableViewContext.headerData[i] });
+        }
+
+        console.log(param.headerModel);  // Verify that tableColums is populated
     }
 
     Rectangle {
@@ -28,6 +48,8 @@ Window {
 
             property int contentMargins: 10
             property int tableWidth: content.width
+
+            property ListModel headerModel: ListModel {}
 
             property int tableColums: 11
             property int tableRows: 4
@@ -46,8 +68,8 @@ Window {
             color: "gray"
 
             onWidthChanged: {
-                param.tableWidth = content.width
-                console.log(param.tableWidth)
+                param.tableWidth = content.width;
+
             }
 
             Row{
@@ -61,19 +83,19 @@ Window {
 
 
                 Repeater{
-                    model: param.tableColums
+                    model: param.headerModel
                     id: headerModel
 
                     Rectangle {
                         id: headerDelegate
                         width: ((parent.width/headerModel.count) - rowHeader.spacing)
                         height: 25
-                        color: "#f0f0f0"
+                        color: "#d0d0d0"
                         radius: 0
 
                         Text {
                             anchors.centerIn: parent
-                            text: modelData  // Use modelData to display the header text
+                            text: model.headerText  // Use modelData to display the header text
                         }
                     }
                 }
@@ -89,27 +111,6 @@ Window {
 
             }
 
-//            Column {
-//                id: columnHeader
-//                width: 25
-//                anchors.top: spacerHorizontal.bottom
-//                anchors.bottom: parent.bottom
-//                anchors.left: parent.left
-//                z: 1
-
-//                Repeater{
-//                    model: 4
-//                    Rectangle {
-//                        width: 25; height: 50
-//                        border.width: 1
-//                        color: "yellow"
-//                    }
-
-//                }
-
-//            }
-
-
             TableView {
                 id: tableView
                 anchors.top: spacerHorizontal.bottom
@@ -123,8 +124,8 @@ Window {
                 clip: true
 
                 model: CoeffTableModel {
-                            // Ваши столбцы и данные можно добавить здесь
-                        }
+                    id: tableModel
+                }
 
                 /*
                 model: TableModel {
@@ -161,27 +162,57 @@ Window {
                     implicitHeight: 50
                     border.width: 0
                     radius: param.tableCellRadius
+                    color: (model.row%2) ? "#f0f0f0" : "#ffffff"
 
-                    Text {
+                    TextInput {
                         text: display
-                        anchors.centerIn: parent
+                        selectByMouse: true
+                        anchors.fill: parent
+                        horizontalAlignment: TextEdit.AlignHCenter
+                        verticalAlignment: TextEdit.AlignVCenter
+                        validator: DoubleValidator {
+                            top: 10000.00;
+                            bottom: -100.00;
+                            decimals: 2;
+                            //locale: Qt.locale("en_US")
+                            notation: DoubleValidator.StandardNotation }
+
+                        onEditingFinished: {
+
+                            console.log("Model index is: ", tableModel.index(row, column));
+                            var modifiedText = text.replace(",",".")
+                            //  write data to model //    setData method in tablemodel.cpp  //
+
+                            //first row of table always temperature
+                            if(row === 0) {
+                                tableModel.setData(tableModel.index(row, column), parseFloat(modifiedText), Qt.EditRole);
+                            }
+                            else{
+                                tableModel.setData(tableModel.index(row, column), parseInt(modifiedText), Qt.EditRole);
+                            }
+
+
+                        }
                     }
                 }
             }
 
-
         }
-
-
-
-
 
     }
 
-
-
-
-
+    Button {
+        id: button
+        x: 400
+        y: 400
+        width: 100
+        height: 20
+        text: qsTr("Button")
+        z: 2
+        onClicked: {
+            f.readData()
+        }
+    }
 
 }
 

@@ -3,16 +3,12 @@
 CoeffTableModel::CoeffTableModel(QObject *parent)
 {
     // Инициализация данных вашей таблицы. Замените эти значения на ваши данные.
-//    QList<QVariant> temperatureHeader;
-//    temperatureHeader << id << t6 << t5 << t4 << t3 << t2 << t1 << t0 << t-1 << t-2 << t-3;
-//    tableData.append(temperatureHeader);
-
     QList<QVariant> headerData;
-    headerData << "/" << "60°C" << "50°C" << "40°C" << "30°C" << "20°C" << "10°C" << "0°C" << "-10°C" << "-20°C" << "-30°C";  // Add your header data
+    headerData << "" << "60°C" << "50°C" << "40°C" << "30°C" << "20°C" << "10°C" << "0°C" << "-10°C" << "-20°C" << "-30°C";  // Add your header data
     this->setHeaderData(headerData);
 
     QList<QVariant> temperatureRow;
-    temperatureRow << "Температура" << 60.24 << 50.54 << 40.24 << 30.23 << 20.22 << 10.11 << 0.24 << -10.34 << -20.33 << -30.33;
+    temperatureRow << "Температура" << 60 << 50 << 40 << 30 << 20 << 10 << 0 << -10 << -20 << -30;
         tableData.append(temperatureRow);
 
     QList<QVariant> uzmRow;
@@ -26,6 +22,10 @@ CoeffTableModel::CoeffTableModel(QObject *parent)
     QList<QVariant> noiseRow;
     noiseRow << "Шум" << 2 << 2 << 1 << 1 << 0 << 0 << 0 << 0 << 0 << 0;
     tableData.append(noiseRow);
+
+    //test
+    m_variantList << "/" << "60°C" << "50°C" << "40°C" << "30°C" << "20°C" << "10°C" << "0°C" << "-10°C" << "-20°C" << "-30°C";
+
 }
 
 int CoeffTableModel::rowCount(const QModelIndex &parent) const
@@ -95,12 +95,15 @@ bool CoeffTableModel::setData(const QModelIndex &index, const QVariant &value, i
     int row = index.row();
     int col = index.column();
 
-    if (row < 1 || row >= tableData.size() || col < 0 || col >= tableData.at(0).size())
+    if (row < 0 || row >= tableData.size() || col < 0 || col >= tableData.at(0).size())
         return false;
 
     tableData[row][col] = value;
-    // Эмитируем сигнал об изменении данных
-    emit dataChanged(index, index);
+    // Emit the dataChanged signal to inform the view that the data has changed
+    emit dataChanged(index, index, {role});
+
+    //dispaly changed value
+    qDebug() << tableData;
 
     return true;
 }
@@ -108,13 +111,6 @@ bool CoeffTableModel::setData(const QModelIndex &index, const QVariant &value, i
 void CoeffTableModel::setHeaderData(const QList<QVariant> hData)
 {
     m_headerData = hData;
-    emit headerDataModified(m_headerData);  // Emit the custom signal
+    //emit headerDataModified(m_headerData);  // Emit the custom signal
     //qDebug() << "Header data modified:" << m_headerData;
 }
-
-void CoeffTableModel::sendHeaderData()
-{
-    emit headerDataModified(m_headerData);
-}
-
-
