@@ -12,7 +12,7 @@ class CoeffTableModel : public QAbstractTableModel
     Q_OBJECT
 
 
-   Q_PROPERTY(QList<QVariant> headerData READ headerData NOTIFY headerDataChanged)
+   Q_PROPERTY(QList<QVariant> headerData READ headerData NOTIFY headerDataCreated)
    //testing list
    Q_PROPERTY(QList<QVariant> variantList READ variantList NOTIFY variantListChanged)
 
@@ -46,8 +46,13 @@ private:
     QList<QVariant> m_variantList;
 
 signals:
-    void headerDataChanged();
+    void headerDataCreated();
     void variantListChanged();
+
+    void headerDataModified(QList<QVariant>);
+
+public slots:
+    void reciveTest(int);
 
 };
 

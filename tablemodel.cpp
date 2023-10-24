@@ -111,6 +111,27 @@ bool CoeffTableModel::setData(const QModelIndex &index, const QVariant &value, i
 void CoeffTableModel::setHeaderData(const QList<QVariant> hData)
 {
     m_headerData = hData;
-    //emit headerDataModified(m_headerData);  // Emit the custom signal
+    emit headerDataModified(m_headerData);  // Emit the custom signal
     //qDebug() << "Header data modified:" << m_headerData;
+}
+
+void CoeffTableModel::reciveTest(int test)
+{
+    QList<QVariant> headerData;
+
+    switch (test) {
+
+    case 0:
+
+        headerData << "/" << "60°C" << "50°C" << "40°C" << "30°C" << "20°C" << "10°C" << "0°C";
+        setHeaderData(headerData);
+        qDebug() << "Header data modified:" << m_headerData;
+
+        break;
+
+
+    default:
+        break;
+    }
+
 }

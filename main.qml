@@ -19,9 +19,16 @@ Window {
         target: TableViewContext
 
         function onHeaderDataModified(data) {
-            //textAreaLog.append(data)
-            console.log(data)
+            // Clear the existing items in the tableColums model
+            param.headerModel.clear();
+            param.tableColums = data.length;
+
+            // Populate the tableColums model with data from headerData
+            for (var i = 0; i < data.length; i++) {
+                param.headerModel.append({ "headerText": data[i] });
+            }
         }
+
     }
 
     Component.onCompleted: {
@@ -210,7 +217,7 @@ Window {
         text: qsTr("Button")
         z: 2
         onClicked: {
-            f.readData()
+            TableViewContext.reciveTest(0) //change header
         }
     }
 
