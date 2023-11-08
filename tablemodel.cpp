@@ -135,3 +135,73 @@ void CoeffTableModel::reciveTest(int test)
     }
 
 }
+
+bool CoeffTableModel::insertRows(int row, int count, const QModelIndex &parent)
+{
+    if (row < 0 || row > tableData.size())
+        return false;
+
+    beginInsertRows(parent, row, row + count - 1);
+
+    for (int i = 0; i < count; ++i) {
+        QList<QVariant> newRow(tableData.at(0).size());
+        tableData.insert(row + i, newRow);
+    }
+
+    endInsertRows();
+
+    return true;
+}
+
+bool CoeffTableModel::insertColumns(int column, int count, const QModelIndex &parent)
+{
+    if (column < 0 || column > tableData.at(0).size())
+        return false;
+
+    beginInsertColumns(parent, column, column + count - 1);
+
+    for (int i = 0; i < count; ++i) {
+        for (int j = 0; j < tableData.size(); ++j) {
+            tableData[j].insert(column + i, QVariant());
+        }
+    }
+
+    endInsertColumns();
+
+    return true;
+}
+
+bool CoeffTableModel::removeRows(int row, int count, const QModelIndex &parent)
+{
+    if (row < 0 || (row + count) > tableData.size())
+        return false;
+
+    beginRemoveRows(parent, row, row + count - 1);
+
+    for (int i = 0; i < count; ++i) {
+        tableData.removeAt(row);
+    }
+
+    endRemoveRows();
+
+    return true;
+}
+
+bool CoeffTableModel::removeColumns(int column, int count, const QModelIndex &parent)
+{
+    if (column < 0 || (column + count) > tableData.at(0).size())
+        return false;
+
+    beginRemoveColumns(parent, column, column + count - 1);
+
+    for (int i = 0; i < count; ++i) {
+        for (int j = 0; j < tableData.size(); ++j) {
+            tableData[j].removeAt(column);
+        }
+    }
+
+    endRemoveColumns();
+
+    return true;
+}
+
